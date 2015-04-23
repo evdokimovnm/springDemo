@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+    <!--VIEW-->
+    <bean id="userController" class="net.evdokimov.spring.controllers.UserControllerImpl" scope="prototype">
+        <property name="validator" ref="userValidator"/>
+        <property name="dao" ref="userDao"/>
+    </bean>
+
+    <!--VALIDATE-->
+    <bean id="userValidator" class="net.evdokimov.spring.validate.UserValidatorImpl" scope="prototype">
+        <property name="emailPattern" value="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"/>
+        <property name="maxLoginLength" value="${login.max}"/>
+        <property name="maxPasswordLength" value="${password.max}"/>
+        <property name="minLoginLength" value="${login.min}"/>
+        <property name="minPasswordLength" value="${password.min}"/>
+    </bean>
+
+    <context:component-scan base-package="net.evdokimov.spring.*" />
+
+    <context:property-placeholder location="user.properties"/>
+
+    <!--DATA-->
+    <bean id="userDao" class="net.evdokimov.spring.dao.UserDaoJdbcTemplateImpl" scope="prototype">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <jdbc:embedded-database id="dataSource" type="HSQL">
+        <jdbc:script location="classpath:schema.sql"/>
+        <jdbc:script location="classpath:test-data.sql"/>
+    </jdbc:embedded-database>
+
+    <!--TX-->
+    <!--<tx:annotation-driven transaction-manager="txManager"/>-->
+
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+
+</beans>

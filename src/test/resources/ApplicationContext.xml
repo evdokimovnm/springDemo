@@ -14,7 +14,7 @@
 
     <!--VALIDATE-->
     <bean id="userValidator" class="net.evdokimov.spring.validate.UserValidatorImpl" scope="prototype">
-        <property name="emailPattern" value="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"/>
+        <property name="emailPattern" value="${email.pattern}"/>
         <property name="maxLoginLength" value="${login.max}"/>
         <property name="maxPasswordLength" value="${password.max}"/>
         <property name="minLoginLength" value="${login.min}"/>
@@ -27,7 +27,7 @@
 
     <!--DATA-->
     <bean id="userDao" class="net.evdokimov.spring.dao.UserDaoJdbcTemplateImpl" scope="prototype">
-        <property name="dataSource" ref="dataSource" />
+        <!--<property name="dataSource" ref="dataSource" />-->
     </bean>
 
     <jdbc:embedded-database id="dataSource" type="HSQL">
@@ -36,7 +36,7 @@
     </jdbc:embedded-database>
 
     <!--TX-->
-    <!--<tx:annotation-driven transaction-manager="txManager"/>-->
+    <!--<tx:annotation-driven />-->
 
     <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>

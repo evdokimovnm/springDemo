@@ -15,7 +15,7 @@ import java.util.List;
 public class UserDaoJdbcTemplateImpl implements UserDao {
     private JdbcTemplate jdbc;
 
-    //@Autowired
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbc = new JdbcTemplate(dataSource);
     }
